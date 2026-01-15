@@ -37,11 +37,4 @@ class Project(models.Model):  #модель проєктів портфоліо
         return self.title
 
 
-class SocialLink(models.Model): #соціальні мережі / зовнішні посилання
 
-    profile = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name="social_links") #профіль користувача
-    name = models.CharField(max_length=50, help_text="Напр. GitHub, LinkedIn") #назва соцмережі
-    url = models.URLField() #URL посилання
-
-    def __str__(self):
-        return f"{self.name} - {self.profile.user.username}"
