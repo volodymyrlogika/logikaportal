@@ -28,27 +28,7 @@
     </ul>
 <h1>{{ topic.title }}</h1>
 
-<h2>Коментарі</h2>
-{% for comment in topic.comments.all %}
-    <div>
-        <strong>{{ comment.author.username }}</strong>:
-        {{ comment.content }}
-        <small>{{ comment.created_at }}</small>
-    </div>
-{% empty %}
-    <p>Коментарів ще немає.</p>
-{% endfor %}
 
-{% if user.is_authenticated %}
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Додати коментар</button>
-    </form>
-{% else %}
-    <p>Ви повинні увійти, щоб залишити коментар.</p>
-{% endif %}
 
-</div>
 {% endblock %}
 
