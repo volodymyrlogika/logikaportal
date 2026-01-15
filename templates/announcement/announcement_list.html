@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Оголошення</h1>
+    <div class="announcement-list">
+        {% for announcement in announcements %}
+            <div class="announcement-item">
+                <h2>{{ announcement.title }}</h2>
+                <p>{{ announcement.content }}</p>
+                <p><em>Автор: {{ announcement.author }}</em></p>
+                <p><em>Оновлено: {{ announcement.updated_at }}</em></p>
+                {% if announcement.image %}
+                    <img src="{{ announcement.image.url }}" alt="{{ announcement.title }}">
+                {% endif %}
+            </div>
+        {% empty %}
+            <p>Немає оголошень для відображення.</p>
+        {% endfor %}
+    </div>
+{% endblock %}
