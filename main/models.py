@@ -27,7 +27,41 @@ class ForumPost(models.Model):
         related_name='forum_posts'
     )
     content = models.TextField()
+    image = models.ImageField(upload_to='forum_images/', blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f'{self.author.username}: {self.content[:30]}'
+    
+class Reaction(models.Model):
+    REACTION_CHOICES = [
+        ('like', '👍'),
+        ('dislike', '👎'),
+        ('love', '❤️'),
+        ('funny', '😂'),
+        ('angry', '😠'),
+        ('sad', '😢'),
+        ('wow', '😮'),
+        ('confused', '😕'),
+        ('surprised', '😲'),
+    ]
+
+    post = models.ForeignKey(
+        ForumPost,
+        on_delete=models.CASCADE,
+        related_name='reactions'
+    )
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='forum_reactions'
+    )
+    reaction_type = models.CharField(max_length=10, choices=REACTION_CHOICES)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('post', 'user', 'reaction_type')
+
+    def __str__(self):
+        return f'{self.user.username} reacted {self.reaction_type} to post {self.post.id}'
+    

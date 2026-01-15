@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %}Forum Topics{% endblock %}
+
+{% block content %}
+<h1>Forum Topics</h1>
+<ul></ul>   
+{% for topic in topic_list %}
+    <li>
+        <a href=""></a>{{ topic.title }}</a> - {{ topic.created_at|date:"F j, Y, g:i a" }}
+    </li>
+{% empty %}
+    <li>No topics available.</li>
+{% endfor %}
+{% endblock %}
+
