@@ -65,3 +65,19 @@ class Reaction(models.Model):
     def __str__(self):
         return f'{self.user.username} reacted {self.reaction_type} to post {self.post.id}'
     
+class Comment(models.Model):
+    post = models.ForeignKey(
+        ForumPost,
+        on_delete=models.CASCADE,
+        related_name='comments'
+    )
+    author = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='forum_comments'
+    )
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.author.username} commented: {self.content[:30]}'

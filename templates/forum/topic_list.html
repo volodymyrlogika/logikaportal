@@ -3,14 +3,52 @@
 {% block title %}Forum Topics{% endblock %}
 
 {% block content %}
-<h1>Forum Topics</h1>
-<ul></ul>   
-{% for topic in topic_list %}
-    <li>
-        <a href=""></a>{{ topic.title }}</a> - {{ topic.created_at|date:"F j, Y, g:i a" }}
-    </li>
+<div class="forum-wrapper">
+
+    <h1 class="forum-title">💬 Теми форуму</h1>
+
+    <ul class="topic-list">
+        {% for topic in topic_list %}
+            <li class="topic-card">
+                <div class="topic-main">
+                    <span class="topic-name">
+                        {{ topic.title }}
+                    </span>
+                </div>
+
+                <div class="topic-meta">
+                    🕒 {{ topic.created_at|date:"d.m.Y H:i" }}
+                </div>
+            </li>
+        {% empty %}
+            <li class="topic-empty">
+                Поки що немає жодної теми
+            </li>
+        {% endfor %}
+    </ul>
+<h1>{{ topic.title }}</h1>
+
+<h2>Коментарі</h2>
+{% for comment in topic.comments.all %}
+    <div>
+        <strong>{{ comment.author.username }}</strong>:
+        {{ comment.content }}
+        <small>{{ comment.created_at }}</small>
+    </div>
 {% empty %}
-    <li>No topics available.</li>
+    <p>Коментарів ще немає.</p>
 {% endfor %}
+
+{% if user.is_authenticated %}
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Додати коментар</button>
+    </form>
+{% else %}
+    <p>Ви повинні увійти, щоб залишити коментар.</p>
+{% endif %}
+
+</div>
 {% endblock %}
 

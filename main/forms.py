@@ -1,7 +1,14 @@
 from django import forms
-from .models import ForumTopic, ForumPost
+from .models import ForumTopic, ForumPost, Comment
 
 
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ['content']
+        widgets = {
+            'content': forms.Textarea(attrs={'rows': 3, 'placeholder': 'Напишіть коментар...'})
+        }
 
 
 class ForumTopicForm(forms.ModelForm):
@@ -22,4 +29,3 @@ class ForumPostForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['content'].widget.attrs.update({'class': 'form-control mb-2', 'rows': 4})
-        
