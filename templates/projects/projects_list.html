@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}
+Усі проєкти
+{% endblock %}
+
+{% block content %}
+
+<h1 class="mb-4">
+    <i class="bi bi-collection"></i> Усі проєкти
+</h1>
+
+<div class="row g-4">
+    {% for project in projects %}
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm">
+                {% if project.image %}
+                    <img src="{{ project.image.url }}" class="card-img-top" alt="{{ project.title }}">
+                {% endif %}
+
+                <div class="card-body">
+                    <h5 class="card-title">{{ project.title }}</h5>
+                    <p class="card-text text-muted">
+                        {{ project.description|truncatechars:100 }}
+                    </p>
+                </div>
+
+                <div class="card-footer d-flex justify-content-between">
+                    <small class="text-muted">
+                        👤 {{ project.profile.user.username }}
+                    </small>
+                    <a href="{% url 'project_detail' project.pk %}"
+                       class="btn btn-sm btn-outline-primary">
+                        Детальніше
+                    </a>
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <p>Проєктів поки немає.</p>
+    {% endfor %}
+</div>
+
+{% endblock %}
