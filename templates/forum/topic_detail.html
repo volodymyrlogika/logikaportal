@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ topic.title }}{% endblock %}
+
+{% block content %}
+<div class="forum-wrapper" style="max-width: 800px; margin: auto; padding: 20px;">
+
+    <h1 class="forum-title" style="text-align:center; margin-bottom:30px;">💬 {{ topic.title }}</h1>
+
+    <ul class="post-list" style="list-style:none; padding:0;">
+        {% for post in posts %}
+            <li class="post-card" style="border:1px solid #ddd; border-radius:10px; padding:15px; margin-bottom:20px; background:#f9f9f9;">
+                <div style="font-weight:bold; margin-bottom:5px;">
+                    {{ post.author.username }} 🕒 {{ post.created_at|date:"d.m.Y H:i" }}
+                </div>
+                <p style="margin-bottom:10px;">{{ post.content }}</p>
+
+                <ul class="comment-list" style="list-style:none; padding-left:20px;">
+                    {% for comment in post.comments.all %}
+                        <li style="border-left:2px solid #ddd; padding-left:10px; margin-bottom:8px;">
+                            <strong>{{ comment.author.username }}</strong>: {{ comment.content }}
+                        </li>
+                    {% empty %}
+                        <li style="color:#777;">Поки що немає коментарів</li>
+                    {% endfor %}
+                </ul>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <h2 style="margin-top:40px;">✍️ Додати коментар</h2>
+    <form method="post" style="display:flex; flex-direction:column; gap:10px; margin-bottom:30px;">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="hidden" name="post_id" value="{{ posts.first.id }}">
+        <button type="submit" style="padding:10px 20px; border:none; border-radius:5px; background:#4CAF50; color:white; font-weight:bold; cursor:pointer;">
+            Додати коментар
+        </button>
+    </form>
+
+    <p><a href="{% url 'topic_list' %}" style="color:#555; text-decoration:none;">⬅ Назад до списку тем</a></p>
+</div>
+{% endblock %}

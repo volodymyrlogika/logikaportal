@@ -4,31 +4,23 @@
 
 {% block content %}
 <div class="forum-wrapper">
-
     <h1 class="forum-title">💬 Теми форуму</h1>
 
     <ul class="topic-list">
         {% for topic in topic_list %}
             <li class="topic-card">
                 <div class="topic-main">
-                    <span class="topic-name">
+                    <a href="{% url 'topic_detail' topic.id %}" class="topic-name">
                         {{ topic.title }}
-                    </span>
+                    </a>
                 </div>
-
                 <div class="topic-meta">
                     🕒 {{ topic.created_at|date:"d.m.Y H:i" }}
                 </div>
             </li>
         {% empty %}
-            <li class="topic-empty">
-                Поки що немає жодної теми
-            </li>
+            <li class="topic-empty">Поки що немає жодної теми</li>
         {% endfor %}
     </ul>
-<h1>{{ topic.title }}</h1>
-
-
-
+</div>
 {% endblock %}
-
