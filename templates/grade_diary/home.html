@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+
+    <h2 class="mb-4">Оцінки</h2>
+
+    {% if grades %}
+        <div class="row grade-group">
+
+            {% for grade in grades %}
+                <div class="col-md-6 col-lg-4 mb-3">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body text-center">
+
+                            <h5 class="card-title">
+                                {{ grade.lesson.name }}
+                            </h5>
+
+                            <span class="badge fs-5
+                                {% if grade.score >= 10 %} bg-success
+                                {% elif grade.score >= 7 %} bg-warning text-dark
+                                {% else %} bg-danger
+                                {% endif %}
+                            ">
+                                {{ grade.score }}
+                            </span>
+
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            У вас поки немає оцінок
+        </div>
+    {% endif %}
+
+</div>
+{% endblock content %}
