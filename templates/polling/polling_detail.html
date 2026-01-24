@@ -1,4 +1,18 @@
 {% extends 'base.html' %}
 {% block content %}
- <h2>{{polling.question}}</h2>
+ <h2>{{ polling.question }}</h2>
+ {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+ <form action="{% url 'polling_detail' polling.id %}" method="post">
+  {% csrf_token %}
+  {% for choice in polling.choices.all %}
+  <div class="form-check">
+   <input class="form-check-input" type="radio" name="choice" id="choice{{ forloop.counter }}" value="{{ choice.id }}">
+   <label class="form-check-label" for="choice{{ forloop.counter }}">
+    {{ choice.text }}
+   </label>
+  </div>
+  {% endfor %}
+  <button type="submit" class="btn btn-primary mt-3">Проголосувати</button>
+ </form>
 {% endblock content %}

@@ -50,6 +50,7 @@ class Polling(models.Model):
 
 class Choice(models.Model):
     # до якого опитування належить варіант
+    DoesNotExist = None
     polling = models.ForeignKey(Polling, on_delete=models.CASCADE, related_name='choices')
     # ForeignKey - кожен Choice належить одному Polling
     # on_delete=models.CASCADE при видаленні Polling видаляться всі його Choice
@@ -61,6 +62,9 @@ class Choice(models.Model):
 
     # Текст варіанту відповіді
     text = models.CharField(max_length=500, verbose_name="Choice text")
+
+    # *** лічильник голосів ***
+    votes = models.IntegerField(default=0, verbose_name="Number of Votes")
 
     created_at = models.DateTimeField(auto_now_add=True)
 
