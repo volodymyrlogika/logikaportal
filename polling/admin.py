@@ -21,5 +21,5 @@ class PollingAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Polling, PollingAdmin)
-# Теперь Choice будет управляться через PollingAdmin, эту строку можно удалить или закомментировать:
-# admin.site.register(Choice)
+# Тепер Choice будет керуватися через PollingAdmin, цей рядок можна вдалити або закоментувати:
+# admin.site.register(Choice)1

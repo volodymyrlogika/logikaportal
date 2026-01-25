@@ -9,7 +9,7 @@ from django.db.models import F # Імпортуємо F expression
 
 class PollingListView(ListView):
     model = Polling
-    template_name = 'polling_list.html'
+    template_name = 'polling/polling_list.html'
     context_object_name = 'polling_list'
     ordering = ['created_at']
 
@@ -18,6 +18,23 @@ class PollingDetailView(DetailView):
     model = Polling
     template_name = 'polling/polling_detail.html'
     context_object_name = 'polling'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        choices = self.object.choices.all()
+        total_votes = sum(c.votes for c in choices)
+
+        results = []
+        for choice in choices:
+            percent = (choice.votes / total_votes * 100) if total_votes > 0 else 0
+            results.append({
+                'text': choice.text,
+                'votes': choice.votes,
+                'percent': round(percent, 1),
+            })
+
+        context['results'] = results
+        return context
 
     def post(self, request, *args, **kwargs):
         polling = self.get_object()
