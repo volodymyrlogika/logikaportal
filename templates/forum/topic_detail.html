@@ -49,14 +49,13 @@
         {% csrf_token %}
         {{ form }}
         <input type="hidden" name="post_id" value="{{ post.id }}">
-        <button type="submit" style="padding:10px 15px; border:none; background:#4da3ff; color:white; border-radius:6px; cursor:pointer; transition:0.2s;">
+        <button type="submit" name="add_comment" style="padding:10px 15px; border:none; background:#4da3ff; color:white; border-radius:6px; cursor:pointer; transition:0.2s;">
             Додати коментар
         </button>
     </form>
 </div>
 {% endfor %}
 
-<!-- JS для hover ефектів реакцій -->
 <script>
 document.querySelectorAll('.reaction-btn').forEach(btn => {
     btn.addEventListener('mouseenter', () => btn.style.opacity='0.8');
@@ -64,7 +63,6 @@ document.querySelectorAll('.reaction-btn').forEach(btn => {
 });
 </script>
 
-<!-- СТИЛІ -->
 <style>
 .reaction-btn {
     border:none;
@@ -84,7 +82,7 @@ form input, form textarea {
     color:#e0e0e0 !important;
     border:1px solid #444 !important;
     border-radius:6px;
-    padding:6px;
+    padding:6px 8px;
 }
 form input:focus, form textarea:focus {
     border-color:#4da3ff !important;

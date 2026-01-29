@@ -20,7 +20,7 @@ def topic_detail(request, topic_id):
         ForumPost.objects.create(topic=topic, author=topic.created_by, content='Перший пост у темі')
         posts = topic.posts.all()
 
-    form = CommentForm()  # <-- створюємо форму завжди, незалежно від POST
+    form = CommentForm()  # завжди створюємо форму
 
     if request.method == 'POST':
         # Додавання коментаря
@@ -42,7 +42,7 @@ def topic_detail(request, topic_id):
 
             if existing_reaction:
                 if existing_reaction.reaction_type == reaction_type:
-                    existing_reaction.delete()  # прибираємо реакцію
+                    existing_reaction.delete()
                 else:
                     existing_reaction.reaction_type = reaction_type
                     existing_reaction.save()
