@@ -6,6 +6,8 @@ class AnnouncementListView (ListView):
     model = Announcement
     template_name = 'announcement/announcement_list.html'
     context_object_name = 'announcements'
+    def get_queryset(self):
+        return Announcement.objects.filter(status='published')
 
 class AnnouncementDetailView (DetailView):
     model = Announcement
