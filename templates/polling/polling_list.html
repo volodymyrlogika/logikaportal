@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="list-group">
+    {% for polling in polling_list %}
+        <a href="{% url 'polling_detail' polling.id %}" class="list-group-item list-group-item-action">
+            <span class="badge rounded-pill text-bg-primary">{{polling.status}}</span>
+            {{polling.question}}
+            <span class="text-primary ms-3">{{polling.author}}</span>
+        </a>
+
+
+    {% endfor %}
+    </div>
+{% endblock content %}
