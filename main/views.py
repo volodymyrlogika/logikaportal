@@ -1,49 +1,48 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.views.generic import ListView
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
-from .models import ForumTopic, ForumPost
+from django.views.generic import ListView
+from .models import ForumTopic, ForumPost, Comment, CommentReaction
 from .forms import CommentForm
 
-# Список тем
-class TopicListView(LoginRequiredMixin, ListView):
+class TopicListView(ListView):
     model = ForumTopic
     template_name = 'forum/topic_list.html'
     context_object_name = 'topic_list'
     ordering = ['-created_at']
 
-
-# Деталі теми + коментарі
 @login_required
 def topic_detail(request, topic_id):
     topic = get_object_or_404(ForumTopic, id=topic_id)
-    posts = topic.posts.all().order_by('created_at')
+    posts = topic.posts.all()
 
-    # Якщо ще немає жодного поста, створюємо перший
     if not posts.exists():
-        first_post = ForumPost.objects.create(
-            topic=topic,
-            author=topic.created_by,
-            content="Це перший пост цієї теми"
-        )
-        posts = topic.posts.all().order_by('created_at')
+        ForumPost.objects.create(topic=topic, author=topic.created_by, content='Перший пост у темі')
+        posts = topic.posts.all()
 
     if request.method == 'POST':
-        post_id = request.POST.get('post_id')
-        post = get_object_or_404(ForumPost, id=post_id, topic=topic)
+        if 'add_comment' in request.POST:
+            post = get_object_or_404(ForumPost, id=request.POST.get('post_id'))
+            form = CommentForm(request.POST)
+            if form.is_valid():
+                comment = form.save(commit=False)
+                comment.author = request.user
+                comment.post = post
+                comment.save()
+                return redirect('topic_detail', topic_id=topic.id)
 
-        form = CommentForm(request.POST)
-        if form.is_valid():
-            comment = form.save(commit=False)
-            comment.author = request.user
-            comment.post = post
-            comment.save()
+        if 'comment_reaction' in request.POST:
+            comment = get_object_or_404(Comment, id=request.POST.get('comment_id'))
+            reaction_type = request.POST.get('comment_reaction')
+            existing_reaction = CommentReaction.objects.filter(comment=comment, user=request.user).first()
+            if existing_reaction:
+                if existing_reaction.reaction_type == reaction_type:
+                    existing_reaction.delete()
+                else:
+                    existing_reaction.reaction_type = reaction_type
+                    existing_reaction.save()
+            else:
+                CommentReaction.objects.create(comment=comment, user=request.user, reaction_type=reaction_type)
             return redirect('topic_detail', topic_id=topic.id)
-    else:
-        form = CommentForm()
 
-    return render(request, 'forum/topic_detail.html', {
-        'topic': topic,
-        'posts': posts,
-        'form': form
-    })
+    form = CommentForm()
+    return render(request, 'forum/topic_detail.html', {'topic': topic, 'posts': posts, 'form': form})

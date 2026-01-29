@@ -7,7 +7,9 @@ class CommentForm(forms.ModelForm):
         model = Comment
         fields = ['content']
         widgets = {
-            'content': forms.Textarea(attrs={'rows': 3, 'placeholder': 'Напишіть коментар...'})
+            'content': forms.Textarea(
+                attrs={'rows': 3, 'placeholder': 'Напишіть коментар...'}
+            )
         }
 
 
@@ -18,7 +20,9 @@ class ForumTopicForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['title'].widget.attrs.update({'class': 'form-control mb-2'})
+        self.fields['title'].widget.attrs.update({
+            'class': 'form-control mb-2'
+        })
 
 
 class ForumPostForm(forms.ModelForm):
@@ -28,4 +32,7 @@ class ForumPostForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['content'].widget.attrs.update({'class': 'form-control mb-2', 'rows': 4})
+        self.fields['content'].widget.attrs.update({
+            'class': 'form-control mb-2',
+            'rows': 4
+        })

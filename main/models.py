@@ -32,7 +32,8 @@ class ForumPost(models.Model):
 
     def __str__(self):
         return f'{self.author.username}: {self.content[:30]}'
-    
+
+
 class Reaction(models.Model):
     REACTION_CHOICES = [
         ('like', '👍'),
@@ -62,9 +63,7 @@ class Reaction(models.Model):
     class Meta:
         unique_together = ('post', 'user', 'reaction_type')
 
-    def __str__(self):
-        return f'{self.user.username} reacted {self.reaction_type} to post {self.post.id}'
-    
+
 class Comment(models.Model):
     post = models.ForeignKey(
         ForumPost,
@@ -79,5 +78,24 @@ class Comment(models.Model):
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self):
-        return f'{self.author.username}: {self.content[:30]}'
+
+class CommentReaction(models.Model):
+    REACTION_CHOICES = [
+        ('like', '👍'),
+        ('dislike', '👎'),
+        ('love', '❤️'),
+    ]
+
+    comment = models.ForeignKey(
+        Comment,
+        on_delete=models.CASCADE,
+        related_name='reactions'
+    )
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE
+    )
+    reaction_type = models.CharField(max_length=10, choices=REACTION_CHOICES)
+
+    class Meta:
+        unique_together = ('comment', 'user', 'reaction_type')
