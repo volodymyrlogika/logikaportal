@@ -7,10 +7,14 @@ class CommentForm(forms.ModelForm):
         model = Comment
         fields = ['content']
         widgets = {
-            'content': forms.Textarea(
-                attrs={'rows': 3, 'placeholder': 'Напишіть коментар...'}
-            )
+            'content': forms.Textarea(attrs={'rows': 3, 'placeholder': 'Напишіть коментар...'})
         }
+
+    def clean_content(self):
+        content = self.cleaned_data['content']
+        if len(content.strip()) < 3:
+            raise forms.ValidationError("Коментар надто короткий")
+        return content
 
 
 class ForumTopicForm(forms.ModelForm):

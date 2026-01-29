@@ -77,6 +77,17 @@ class Comment(models.Model):
     )
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
+    
+
+    def likes_count(self):
+        return self.reactions.filter(reaction_type='like').count()
+
+    def dislikes_count(self):
+        return self.reactions.filter(reaction_type='dislike').count()
+
+    def love_count(self):
+        return self.reactions.filter(reaction_type='love').count()
+
 
 
 class CommentReaction(models.Model):
