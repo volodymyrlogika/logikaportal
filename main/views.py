@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView
 from .models import ForumTopic, ForumPost, Comment, CommentReaction
 from .forms import CommentForm
+from django.http import HttpResponseForbidden
 
 class TopicListView(ListView):
     model = ForumTopic
@@ -52,3 +53,12 @@ def topic_detail(request, topic_id):
 
     return render(request, 'forum/topic_detail.html', {'topic': topic, 'posts': posts, 'form': form})
 
+@login_required
+def delete_comment(request, comment_id):
+    comment = get_object_or_404(Comment, id=comment_id)
+
+    if comment.author != request.user and not request.user.is_staff:
+        return HttpResponseForbidden("Немає прав на видалення")
+
+    comment.delete()
+    return redirect('topic_detail', topic_id=comment.post.topic.id)

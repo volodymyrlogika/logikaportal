@@ -1,77 +1,95 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<h2 style="margin-bottom:20px;">{{ topic.title }}</h2>
+<h2 style="margin-bottom:30px; color:#ffffff;">{{ topic.title }}</h2>
 
 {% for post in posts %}
-<div style="border:1px solid #ddd; border-radius:10px; padding:20px; margin-bottom:25px; box-shadow:0 2px 8px rgba(0,0,0,0.05);">
-    <div style="font-weight:bold; margin-bottom:10px;">{{ post.author.username }}</div>
-    <div style="margin-bottom:15px;">{{ post.content }}</div>
+<div style="background:#1e1e1e; border-radius:12px; padding:20px; margin-bottom:30px; box-shadow:0 4px 12px rgba(0,0,0,0.3);">
+    <div style="font-weight:bold; font-size:16px; color:#4da3ff; margin-bottom:10px;">
+        {{ post.author.username }}
+    </div>
+    <div style="margin-bottom:20px; color:#e0e0e0;">
+        {{ post.content }}
+    </div>
 
-    <h4 style="margin-bottom:10px;">Коментарі</h4>
+    <h4 style="margin-bottom:15px; color:#ffffff;">Коментарі</h4>
 
     {% for comment in post.comments.all %}
-    <div style="position:relative; margin-bottom:10px; padding:10px; border-radius:8px; background:#f9f9f9; box-shadow:0 1px 4px rgba(0,0,0,0.05);">
-        <div style="font-weight:bold; margin-bottom:5px;">{{ comment.author.username }}</div>
-        <div style="margin-bottom:5px;">{{ comment.content }}</div>
+    <div style="position:relative; margin-bottom:12px; padding:12px; border-radius:8px; background:#2a2a2a; box-shadow:0 2px 6px rgba(0,0,0,0.2); color:#e0e0e0;">
+        <div style="font-weight:bold; margin-bottom:5px; color:#4da3ff;">
+            {{ comment.author.username }}
+            <small style="color:#aaa; font-weight:normal;">• {{ comment.created_at|date:"d.m.Y H:i" }}</small>
+        </div>
+        <div style="margin-bottom:8px;">{{ comment.content }}</div>
 
-        <!-- Реакції при наведенні -->
-    <div style="margin-left:20px; margin-bottom:10px;">
-        <b>{{ comment.author.username }}</b> 
-        <small style="color:gray;">• {{ comment.created_at|date:"d.m.Y H:i" }}</small>
-        <br>
-        {{ comment.content }}
-
-        <form method="post" style="display:inline;">
+        <!-- Кнопки реакцій -->
+        <form method="post" style="display:inline-block; margin-bottom:8px;">
             {% csrf_token %}
             <input type="hidden" name="comment_id" value="{{ comment.id }}">
-            <button name="comment_reaction" value="like">👍 {{ comment.likes_count }}</button>
-            <button name="comment_reaction" value="dislike">👎 {{ comment.dislikes_count }}</button>
-            <button name="comment_reaction" value="love">❤️ {{ comment.love_count }}</button>
+            <button name="comment_reaction" value="like" class="reaction-btn">👍 {{ comment.likes_count }}</button>
+            <button name="comment_reaction" value="dislike" class="reaction-btn">👎 {{ comment.dislikes_count }}</button>
+            <button name="comment_reaction" value="love" class="reaction-btn">❤️ {{ comment.love_count }}</button>
         </form>
-    </div>
+
+        <!-- Кнопка видалення -->
+        {% if user == comment.author or user.is_staff %}
+        <form method="post" action="{% url 'delete_comment' comment.id %}" style="display:inline-block; margin-left:10px;">
+            {% csrf_token %}
+            <button type="submit" class="reaction-btn" style="background:#ff4d4d; color:white;">Видалити</button>
+        </form>
+        {% endif %}
+
     </div>
     {% empty %}
-        <p>Коментарів ще немає</p>
+        <p style="color:#aaa; font-style:italic;">Коментарів ще немає</p>
     {% endfor %}
 
     <!-- Форма додавання нового коментаря -->
-    <form method="post" style="margin-top:15px;">
+    <form method="post" style="margin-top:15px; display:flex; flex-direction:column; gap:8px;">
         {% csrf_token %}
         {{ form }}
         <input type="hidden" name="post_id" value="{{ post.id }}">
-        <button type="submit" style="padding:8px 15px; border:none; background:#007bff; color:white; border-radius:5px; cursor:pointer;">Додати коментар</button>
+        <button type="submit" style="padding:10px 15px; border:none; background:#4da3ff; color:white; border-radius:6px; cursor:pointer; transition:0.2s;">
+            Додати коментар
+        </button>
     </form>
 </div>
 {% endfor %}
 
-<!-- JS для показу реакцій при наведенні -->
+<!-- JS для hover ефектів реакцій -->
 <script>
-document.querySelectorAll('div[style*="position:relative"]').forEach(commentDiv => {
-    const reactionPanel = commentDiv.querySelector('.reaction-panel');
-    commentDiv.addEventListener('mouseenter', () => {
-        if(reactionPanel) reactionPanel.style.opacity = '1';
-    });
-    commentDiv.addEventListener('mouseleave', () => {
-        if(reactionPanel) reactionPanel.style.opacity = '0';
-    });
+document.querySelectorAll('.reaction-btn').forEach(btn => {
+    btn.addEventListener('mouseenter', () => btn.style.opacity='0.8');
+    btn.addEventListener('mouseleave', () => btn.style.opacity='1');
 });
 </script>
 
+<!-- СТИЛІ -->
 <style>
 .reaction-btn {
     border:none;
     background:none;
     cursor:pointer;
     font-size:14px;
-    padding:2px 5px;
+    padding:3px 6px;
     border-radius:5px;
-    transition: background 0.2s;
+    transition: all 0.2s;
 }
 .reaction-btn:hover {
-    background:#e0e0e0;
+    background:#4da3ff;
+    color:white;
+}
+form input, form textarea {
+    background:#2a2a2a !important;
+    color:#e0e0e0 !important;
+    border:1px solid #444 !important;
+    border-radius:6px;
+    padding:6px;
+}
+form input:focus, form textarea:focus {
+    border-color:#4da3ff !important;
+    outline:none;
 }
 </style>
 
 {% endblock %}
-
