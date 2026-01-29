@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block title %}Forum Topics{% endblock %}
+
+{% block content %}
+<div class="forum-wrapper">
+    <h1 class="forum-title">💬 Теми форуму</h1>
+
+    <ul class="topic-list">
+        {% for topic in topic_list %}
+            <li class="topic-card">
+                <div class="topic-main">
+                    <a href="{% url 'topic_detail' topic.id %}" class="topic-name">
+                        {{ topic.title }}
+                    </a>
+                </div>
+                <div class="topic-meta">
+                    🕒 {{ topic.created_at|date:"d.m.Y H:i" }}
+                </div>
+            </li>
+        {% empty %}
+            <li class="topic-empty">Поки що немає жодної теми</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}
