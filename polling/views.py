@@ -34,6 +34,7 @@ class PollingDetailView(DetailView):
             })
 
         context['results'] = results
+        context['is_voted'] = self.request.session.get(f'voted_poll_{self.object.id}', False)
         return context
 
     def post(self, request, *args, **kwargs):
@@ -58,4 +59,5 @@ class PollingDetailView(DetailView):
             # Використовуємо HttpResponseRedirect, щоб запобігти повторному надсиланню форми
             # Перенаправляємо на сторінку результатів
             # Приклад нижче редиректить на ту ж сторінку деталей, але в майбутньому варто додати сторінку результатів.
+            request.session[f'voted_poll_{polling.id}'] = True
             return HttpResponseRedirect(reverse('polling_detail', args=(polling.id,)))

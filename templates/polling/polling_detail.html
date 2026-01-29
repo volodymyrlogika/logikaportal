@@ -11,7 +11,7 @@
 {% if polling.status == 'active' %}
 <form method="post">
     {% csrf_token %}
-
+    {% if not is_voted %}
     {% for choice in polling.choices.all %}
         <div class="form-check">
             <input
@@ -26,10 +26,12 @@
             </label>
         </div>
     {% endfor %}
-
     <button type="submit" class="btn btn-primary mt-3">
         Проголосувати
     </button>
+      {% else %}
+            <p><strong>Ви вже проголосували в цьому опитуванні.</strong></p>
+        {% endif %}
 </form>
 {% else %}
     <p><strong>Опитування недоступне для голосування.</strong></p>
