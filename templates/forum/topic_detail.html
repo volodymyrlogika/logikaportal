@@ -1,44 +1,77 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<h2>{{ topic.title }}</h2>
+<h2 style="margin-bottom:20px;">{{ topic.title }}</h2>
 
 {% for post in posts %}
-<div style="border:1px solid #ccc; padding:15px; margin-bottom:20px;">
-    <b>{{ post.author.username }}</b><br>
-    {{ post.content }}
+<div style="border:1px solid #ddd; border-radius:10px; padding:20px; margin-bottom:25px; box-shadow:0 2px 8px rgba(0,0,0,0.05);">
+    <div style="font-weight:bold; margin-bottom:10px;">{{ post.author.username }}</div>
+    <div style="margin-bottom:15px;">{{ post.content }}</div>
 
-    <h4>Коментарі</h4>
+    <h4 style="margin-bottom:10px;">Коментарі</h4>
 
     {% for comment in post.comments.all %}
-        <div style="margin-left:20px;">
-            <b>{{ comment.author.username }}</b>: {{ comment.content }}
+    <div style="position:relative; margin-bottom:10px; padding:10px; border-radius:8px; background:#f9f9f9; box-shadow:0 1px 4px rgba(0,0,0,0.05);">
+        <div style="font-weight:bold; margin-bottom:5px;">{{ comment.author.username }}</div>
+        <div style="margin-bottom:5px;">{{ comment.content }}</div>
 
-            <form method="post" style="display:inline;">
-                {% csrf_token %}
-                <input type="hidden" name="comment_id" value="{{ comment.id }}">
-                <button name="comment_reaction" value="like">
-                    👍 {{ comment.likes_count }}
-                </button>
-                <button name="comment_reaction" value="dislike">
-                    👎 {{ comment.dislikes_count }}
-                </button>
-                <button name="comment_reaction" value="love">
-                    ❤️ {{ comment.love_count }}
-                </button>
-            </form>
-        </div>
+        <!-- Реакції при наведенні -->
+    <div style="margin-left:20px; margin-bottom:10px;">
+        <b>{{ comment.author.username }}</b> 
+        <small style="color:gray;">• {{ comment.created_at|date:"d.m.Y H:i" }}</small>
+        <br>
+        {{ comment.content }}
+
+        <form method="post" style="display:inline;">
+            {% csrf_token %}
+            <input type="hidden" name="comment_id" value="{{ comment.id }}">
+            <button name="comment_reaction" value="like">👍 {{ comment.likes_count }}</button>
+            <button name="comment_reaction" value="dislike">👎 {{ comment.dislikes_count }}</button>
+            <button name="comment_reaction" value="love">❤️ {{ comment.love_count }}</button>
+        </form>
+    </div>
+    </div>
     {% empty %}
         <p>Коментарів ще немає</p>
     {% endfor %}
 
-    <form method="post">
+    <!-- Форма додавання нового коментаря -->
+    <form method="post" style="margin-top:15px;">
         {% csrf_token %}
         {{ form }}
         <input type="hidden" name="post_id" value="{{ post.id }}">
-        <button name="add_comment">Додати коментар</button>
+        <button type="submit" style="padding:8px 15px; border:none; background:#007bff; color:white; border-radius:5px; cursor:pointer;">Додати коментар</button>
     </form>
 </div>
 {% endfor %}
 
+<!-- JS для показу реакцій при наведенні -->
+<script>
+document.querySelectorAll('div[style*="position:relative"]').forEach(commentDiv => {
+    const reactionPanel = commentDiv.querySelector('.reaction-panel');
+    commentDiv.addEventListener('mouseenter', () => {
+        if(reactionPanel) reactionPanel.style.opacity = '1';
+    });
+    commentDiv.addEventListener('mouseleave', () => {
+        if(reactionPanel) reactionPanel.style.opacity = '0';
+    });
+});
+</script>
+
+<style>
+.reaction-btn {
+    border:none;
+    background:none;
+    cursor:pointer;
+    font-size:14px;
+    padding:2px 5px;
+    border-radius:5px;
+    transition: background 0.2s;
+}
+.reaction-btn:hover {
+    background:#e0e0e0;
+}
+</style>
+
 {% endblock %}
+

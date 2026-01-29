@@ -19,7 +19,10 @@ def topic_detail(request, topic_id):
         ForumPost.objects.create(topic=topic, author=topic.created_by, content='Перший пост у темі')
         posts = topic.posts.all()
 
+    form = CommentForm()  # <-- створюємо форму завжди, незалежно від POST
+
     if request.method == 'POST':
+        # Додавання коментаря
         if 'add_comment' in request.POST:
             post = get_object_or_404(ForumPost, id=request.POST.get('post_id'))
             form = CommentForm(request.POST)
@@ -30,19 +33,22 @@ def topic_detail(request, topic_id):
                 comment.save()
                 return redirect('topic_detail', topic_id=topic.id)
 
-        if 'comment_reaction' in request.POST:
+        # Реакції на коментар
+        elif 'comment_reaction' in request.POST:
             comment = get_object_or_404(Comment, id=request.POST.get('comment_id'))
             reaction_type = request.POST.get('comment_reaction')
             existing_reaction = CommentReaction.objects.filter(comment=comment, user=request.user).first()
+
             if existing_reaction:
                 if existing_reaction.reaction_type == reaction_type:
-                    existing_reaction.delete()
+                    existing_reaction.delete()  # прибираємо реакцію
                 else:
                     existing_reaction.reaction_type = reaction_type
                     existing_reaction.save()
             else:
                 CommentReaction.objects.create(comment=comment, user=request.user, reaction_type=reaction_type)
+
             return redirect('topic_detail', topic_id=topic.id)
 
-    form = CommentForm()
     return render(request, 'forum/topic_detail.html', {'topic': topic, 'posts': posts, 'form': form})
+
