@@ -1,0 +1,14 @@
+<!-- filepath: /Users/elix/Documents/cb/logikaportal/templates/announcement/announcement_form.html -->
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1 class="mb-4">Створити оголошення</h1>
+
+<form method="post" enctype="multipart/form-data">  <!-- Додано enctype для завантаження файлів -->
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Створити</button>
+</form>
+
+{% endblock %}

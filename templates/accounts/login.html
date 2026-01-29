@@ -1,12 +1,11 @@
 {% extends 'base.html' %}
+
 {% block content %}
-<div style="max-width:400px; margin:50px auto; padding:20px; background:#1e1e1e; border-radius:10px; color:#e0e0e0;">
-  <h2 style="margin-bottom:20px; color:#4da3ff;">Увійти</h2>
-  <form method="post">
+<h2>Увійти в профіль</h2>
+<form method="post">
     {% csrf_token %}
-    <input type="text" name="username" placeholder="Ім'я користувача" style="width:100%; margin-bottom:10px; padding:8px; border-radius:5px; border:1px solid #444; background:#2a2a2a; color:#e0e0e0;">
-    <input type="password" name="password" placeholder="Пароль" style="width:100%; margin-bottom:10px; padding:8px; border-radius:5px; border:1px solid #444; background:#2a2a2a; color:#e0e0e0;">
-    <button type="submit" style="width:100%; padding:10px; border:none; border-radius:5px; background:#4da3ff; color:white;">Увійти</button>
-  </form>
-</div>
+    {{form.as_div}}
+    <button type="submit" class="btn btn-primary">Увійти</button>
+    <a href="{% url 'register' %}" class="btn btn-link">Зареєструватися</a>
+</form>
 {% endblock %}
