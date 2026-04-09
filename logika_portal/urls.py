@@ -26,3 +26,8 @@ urlpatterns = [
     path('', include('accounts.urls')),
     path('polling/', include('polling.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+
+admin.site.site_header = "Logika Portal Admin"
+admin.site.site_title = "Logika Portal Admin"   
+admin.site.index_title = "Welcome to Logika Portal Admin"
